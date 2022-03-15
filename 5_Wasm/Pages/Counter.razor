@@ -1,5 +1,5 @@
 ﻿@page "/counter"
-
+@inject IJSRuntime JS
 <PageTitle>Counter</PageTitle>
 
 <h1>Counter</h1>
@@ -8,11 +8,28 @@
 
 <button class="btn btn-primary" @onclick="IncrementCount">Click me</button>
 
+<button class="btn btn-secondary" @onclick="ShowPrompt">More interop</button>
+
+@(promptText ?? "null value")
 @code {
     private int currentCount = 0;
-
-    private void IncrementCount()
+    private string? promptText;
+    private async Task IncrementCount()
     {
         currentCount++;
+        Console.WriteLine("Hello from blazor wasm!");
+        var objectToLog = new {
+            Hello = "From blazor wasm",
+            ItIs = "Awesome",
+            currentCount
+        };
+        Console.WriteLine(objectToLog);
+        await JS.InvokeVoidAsync("console.table", objectToLog);
+        await JS.InvokeVoidAsync("console.log", objectToLog);
+    }
+
+    private async Task ShowPrompt() 
+    {
+        promptText = await JS.InvokeAsync<string>("prompt", $"Write some text to show on page");
     }
 }
