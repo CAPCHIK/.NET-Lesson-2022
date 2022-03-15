@@ -1,0 +1,41 @@
+﻿@page "/"
+@using System.Collections
+<PageTitle>Index</PageTitle>
+
+<h1>Hello, world!</h1>
+
+Welcome to your new app.
+
+<SurveyPrompt Title="How is Blazor working for you?" />
+
+ <table class="table">
+        <thead>
+            <tr>
+                <th>Key</th>
+                <th>Value</th>
+            </tr>
+        </thead>
+        <tbody>
+          @if (envs is not null)
+          {
+            @foreach (var key in envs.Keys)
+            {
+              <tr>
+                <td>@key</td>
+                <td>@envs[key]</td>
+              </tr>
+            }
+          }
+        </tbody>
+ </table>
+
+@code {
+  private IDictionary? envs;
+  protected override void OnInitialized()
+  {
+    base.OnInitialized();
+    envs = Environment.GetEnvironmentVariables();
+  }
+
+}
+
