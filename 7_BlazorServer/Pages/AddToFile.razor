@@ -1,0 +1,40 @@
+@page "/workwithfile"
+@using System.ComponentModel.DataAnnotations
+<EditForm Model="@exampleModel" OnValidSubmit="@HandleValidSubmit">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <InputText id="name" @bind-Value="exampleModel.Content" />
+
+    <button class="btn btn-primary" type="submit">Submit</button>
+</EditForm>
+<button class="btn btn-primary" @onclick="ReadContent">Read content</button>
+<p style="white-space: pre-wrap;">
+  @fileContent
+</p>
+@code {
+  private string? fileContent;
+  private ExampleModel exampleModel = new();
+
+  protected override async Task OnInitializedAsync()
+  {
+    await base.OnInitializedAsync();
+    await ReadContent();
+  }
+
+  private async Task HandleValidSubmit()
+  {
+    await File.AppendAllTextAsync("file.txt", exampleModel.Content + "\n");
+    exampleModel.Content = "";
+    await ReadContent();
+  }
+  private async Task ReadContent()
+  {
+    fileContent = await File.ReadAllTextAsync("file.txt");
+  }
+  public class ExampleModel
+  {
+      [Required]
+      public string? Content { get; set; }
+  }
+}
